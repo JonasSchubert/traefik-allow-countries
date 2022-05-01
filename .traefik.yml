@@ -1,0 +1,13 @@
+displayName: AllowCountries
+type: middleware
+
+import: code.sinthu-und-jonas.de/jonas-schubert/traefik-allow-countries
+
+summary: 'Only allow request based on their country of origin'
+
+testData:
+  allowLocalRequests: false
+  logLocalRequests: false
+  logAllowedRequests: false
+  countries:
+    - DE
