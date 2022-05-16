@@ -9,7 +9,6 @@ type: middleware
 # The import path of your plugin.
 import: code.sinthu-und-jonas.de/jonas-schubert/traefik-allow-countries
 
-
 # A brief description of what your plugin is doing.
 summary: 'Only allow request based on their country of origin'
 
