@@ -1,10 +1,24 @@
+# https://github.com/traefik/plugindemo
+
+# The name of your plugin as displayed in the Traefik Pilot web UI.
 displayName: AllowCountries
+
+# For now, `middleware` is the only type available.
 type: middleware
 
+# The import path of your plugin.
 import: code.sinthu-und-jonas.de/jonas-schubert/traefik-allow-countries
 
+
+# A brief description of what your plugin is doing.
 summary: 'Only allow request based on their country of origin'
 
+# Medias associated to the plugin (optional)
+# Empty
+
+# Configuration data for your plugin.
+# This is mandatory,
+# and Traefik Pilot will try to execute the plugin with the data you provide as part of its startup validity tests.
 testData:
   allowLocalRequests: false
   logLocalRequests: false
