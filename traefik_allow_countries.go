@@ -1,6 +1,6 @@
 // Package "allow countries" is a Traefik plugin to allow requests based on their country of origin and block everything else.
 // Thanks to https://github.com/PascalMinder/GeoBlock for the initial idea.
-package AllowCountries
+package traefik_allow_countries
 
 import (
 	"bufio"
@@ -28,7 +28,7 @@ const (
  *          Define types          *
  **********************************/
 
-type AllowCountries struct {
+type traefik_allow_countries struct {
 	next               http.Handler
 	name               string
 	allowedIPRanges    []*IpRangesTimestamp
@@ -88,7 +88,7 @@ func New(ctx context.Context, next http.Handler, config *Config, name string) (h
 	log.Println("Log allowed requests: ", config.LogAllowedRequests)
 	log.Println("Log local requests: ", config.LogLocalRequests)
 
-	return &AllowCountries{
+	return &traefik_allow_countries{
 		next:               next,
 		name:               name,
 		allowedIPRanges:    InitializeAllowedIPRanges(config.Countries, config.CidrFileFolder),
@@ -102,7 +102,7 @@ func New(ctx context.Context, next http.Handler, config *Config, name string) (h
 }
 
 // This method is the middleware called during runtime and handling middleware actions.
-func (allowCountries *AllowCountries) ServeHTTP(responseWriter http.ResponseWriter, request *http.Request) {
+func (allowCountries *traefik_allow_countries) ServeHTTP(responseWriter http.ResponseWriter, request *http.Request) {
 	// Collect the IP addresses from the HTTP request.
 	requestIPAddressList, err := allowCountries.CollectRemoteIP(request)
 	if err != nil {
@@ -177,7 +177,7 @@ func (allowCountries *AllowCountries) ServeHTTP(responseWriter http.ResponseWrit
 // This method collects the remote IP address.
 // It tries to parse the IP from the HTTP request.
 // Returns the parsed IP and no error on success, otherwise the so far generated list and an error.
-func (allowCountries *AllowCountries) CollectRemoteIP(request *http.Request) ([]*net.IP, error) {
+func (allowCountries *traefik_allow_countries) CollectRemoteIP(request *http.Request) ([]*net.IP, error) {
 	var ipList []*net.IP
 
 	// Helper method to split a string at char ','

@@ -1,4 +1,4 @@
-package AllowCountries_test
+package traefik_allow_countries_test
 
 import (
 	"context"

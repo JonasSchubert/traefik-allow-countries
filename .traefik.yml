@@ -1,7 +1,7 @@
 # https://github.com/traefik/plugindemo
 
 # The name of your plugin as displayed in the Traefik Pilot web UI.
-displayName: AllowCountries
+displayName: traefik_allow_countries
 
 # For now, `middleware` is the only type available.
 type: middleware
