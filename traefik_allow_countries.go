@@ -122,7 +122,7 @@ func (allowCountries *traefik_allow_countries) ServeHTTP(responseWriter http.Res
 	}
 
 	// Find the block of private ip addresses
-	privateIpAddressIndex := sort.Search(len(allowCountries.allowedIPRanges), func(i int) bool { return allowCountries.allowedIPRanges[i].Country == PrivateIpAddressesTag })
+	privateIpAddressIndex := sort.Search(len(allowCountries.allowedIPRanges), func(i int) bool { return allowCountries.allowedIPRanges[i].Country == PrivateIpAddressesTag }) - 1
 	if allowCountries.logDetails {
 		log.Println("Find the block of private ip addresses at index", privateIpAddressIndex)
 	}
