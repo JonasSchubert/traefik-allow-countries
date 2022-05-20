@@ -220,7 +220,7 @@ func CreateCountryIPBlocks(country string, cidrFileFolder string) *IpRangesTimes
 		"ipv4",
 		"ipv6",
 	} {
-		lines, err := ReadFile(cidrFileFolder + ipType + strings.ToLower(country) + ".cidr")
+		lines, err := ReadFile(cidrFileFolder + "/" + ipType + "/" + strings.ToLower(country) + ".cidr")
 		if err != nil {
 			panic(fmt.Errorf("failed to read file for version %q and country %q: %v", ipType, country, err))
 		}
