@@ -122,12 +122,21 @@ func (allowCountries *traefik_allow_countries) ServeHTTP(responseWriter http.Res
 	}
 
 	// Find the block of private ip addresses
+	if allowCountries.logDetails {
+		log.Println("Find the block of private ip addresses")
+	}
 	privateIpAddressIndex := sort.Search(len(allowCountries.allowedIPRanges), func(i int) bool { return allowCountries.allowedIPRanges[i].Country == PrivateIpAddressesTag })
 	privateIPBlocks := allowCountries.allowedIPRanges[privateIpAddressIndex].IpRanges
 
 	// Iterate over the addresses.
+	if allowCountries.logDetails {
+		log.Println("Iterate over the addresses.")
+	}
 	for _, ipAddress := range requestIPAddressList {
 		// Check whether the current IP address is a private one.
+		if allowCountries.logDetails {
+			log.Println("Check whether the current IP address is a private one.", *ipAddress)
+		}
 		isPrivateIp := IsPrivateIP(*ipAddress, privateIPBlocks)
 		if isPrivateIp {
 			// If local requests are allowed everything is fine.
@@ -149,6 +158,9 @@ func (allowCountries *traefik_allow_countries) ServeHTTP(responseWriter http.Res
 		}
 
 		// Check country ip ranges.
+		if allowCountries.logDetails {
+			log.Println("Check country ip ranges.")
+		}
 		var found bool = false
 		for index := range allowCountries.allowedIPRanges {
 			if allowCountries.allowedIPRanges[index].Country != PrivateIpAddressesTag {
