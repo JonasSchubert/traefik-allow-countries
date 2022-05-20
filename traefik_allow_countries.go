@@ -37,6 +37,7 @@ type traefik_allow_countries struct {
 	cidrFileUpdate     bool
 	countries          []string
 	logAllowedRequests bool
+	logDetails         bool
 	logLocalRequests   bool
 }
 
@@ -46,6 +47,7 @@ type Config struct {
 	CidrFileUpdate     bool     `yaml:"cidrFileUpdate"`
 	Countries          []string `yaml:"countries,omitempty"`
 	LogAllowedRequests bool     `yaml:"logAllowedRequests"`
+	LogDetails         bool     `yaml:"logDetails"`
 	LogLocalRequests   bool     `yaml:"logLocalRequests"`
 }
 
@@ -66,6 +68,7 @@ func CreateConfig() *Config {
 		AllowLocalRequests: false,
 		CidrFileUpdate:     true,
 		LogAllowedRequests: false,
+		LogDetails:         true,
 		LogLocalRequests:   true,
 	}
 }
@@ -86,6 +89,7 @@ func New(ctx context.Context, next http.Handler, config *Config, name string) (h
 	log.Println("CIDR file folder: ", config.CidrFileFolder)
 	log.Println("CIDR file update: ", config.CidrFileUpdate)
 	log.Println("Log allowed requests: ", config.LogAllowedRequests)
+	log.Println("Log details: ", config.LogDetails)
 	log.Println("Log local requests: ", config.LogLocalRequests)
 
 	return &traefik_allow_countries{
@@ -97,12 +101,17 @@ func New(ctx context.Context, next http.Handler, config *Config, name string) (h
 		cidrFileUpdate:     config.CidrFileUpdate,
 		countries:          config.Countries,
 		logAllowedRequests: config.LogAllowedRequests,
+		logDetails:         config.LogDetails,
 		logLocalRequests:   config.LogLocalRequests,
 	}, nil
 }
 
 // This method is the middleware called during runtime and handling middleware actions.
 func (allowCountries *traefik_allow_countries) ServeHTTP(responseWriter http.ResponseWriter, request *http.Request) {
+	if allowCountries.logDetails {
+		log.Println("Called ServeHTTP - started...")
+	}
+
 	// Collect the IP addresses from the HTTP request.
 	requestIPAddressList, err := allowCountries.CollectRemoteIP(request)
 	if err != nil {
@@ -167,6 +176,10 @@ func (allowCountries *traefik_allow_countries) ServeHTTP(responseWriter http.Res
 		}
 	}
 
+	if allowCountries.logDetails {
+		log.Println("Called ServeHTTP - finished and everything seems to be fine...")
+	}
+
 	allowCountries.next.ServeHTTP(responseWriter, request)
 }
 
@@ -178,6 +191,10 @@ func (allowCountries *traefik_allow_countries) ServeHTTP(responseWriter http.Res
 // It tries to parse the IP from the HTTP request.
 // Returns the parsed IP and no error on success, otherwise the so far generated list and an error.
 func (allowCountries *traefik_allow_countries) CollectRemoteIP(request *http.Request) ([]*net.IP, error) {
+	if allowCountries.logDetails {
+		log.Println("Called CollectRemoteIP - started...")
+	}
+
 	var ipList []*net.IP
 
 	// Helper method to split a string at char ','
@@ -207,6 +224,10 @@ func (allowCountries *traefik_allow_countries) CollectRemoteIP(request *http.Req
 		}
 
 		ipList = append(ipList, &ipAddress)
+	}
+
+	if allowCountries.logDetails {
+		log.Println("Called CollectRemoteIP - finished...")
 	}
 
 	return ipList, nil

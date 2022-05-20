@@ -357,6 +357,12 @@ If set to true, will show a log message with the IP and the country of origin if
 
 Defaults to `false`.
 
+### Log details `logDetails`
+
+If set to true, will show a log message with method calls and more.
+
+Defaults to `true`.
+
 ### Log local requests: `logLocalRequests`
 
 If set to true, will show a log message when some one accesses the service over a private ip address.
