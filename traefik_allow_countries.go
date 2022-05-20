@@ -122,10 +122,10 @@ func (allowCountries *traefik_allow_countries) ServeHTTP(responseWriter http.Res
 	}
 
 	// Find the block of private ip addresses
-	if allowCountries.logDetails {
-		log.Println("Find the block of private ip addresses")
-	}
 	privateIpAddressIndex := sort.Search(len(allowCountries.allowedIPRanges), func(i int) bool { return allowCountries.allowedIPRanges[i].Country == PrivateIpAddressesTag })
+	if allowCountries.logDetails {
+		log.Println("Find the block of private ip addresses at index", privateIpAddressIndex)
+	}
 	privateIPBlocks := allowCountries.allowedIPRanges[privateIpAddressIndex].IpRanges
 
 	// Iterate over the addresses.
@@ -247,6 +247,8 @@ func (allowCountries *traefik_allow_countries) CollectRemoteIP(request *http.Req
 
 // Creates a new IP ranges timestamp entity for the provided country.
 func CreateCountryIPBlocks(country string, cidrFileFolder string) *IpRangesTimestamp {
+	log.Println("CreateCountryIPBlocks: ", country, cidrFileFolder)
+
 	var countryIPBlocks []*net.IPNet
 
 	for _, ipType := range []string{
@@ -278,19 +280,25 @@ func CreateCountryIPBlocks(country string, cidrFileFolder string) *IpRangesTimes
 // It uses a predefined range of private CIDR addresses and reads cidr files based on the provided countries.
 // Returns a list of IP ranges timestamp objects.
 func InitializeAllowedIPRanges(countries []string, cidrFileFolder string) []*IpRangesTimestamp {
+	log.Println("InitializeAllowedIPRanges...")
+
 	var allowedIPBlocks []*IpRangesTimestamp
 
 	// Append the private IP addresses first.
+	log.Println("Append the private IP addresses first.")
 	allowedIPBlocks = append(allowedIPBlocks, &IpRangesTimestamp{
 		Country:   PrivateIpAddressesTag,
 		IpRanges:  InitializePrivateIPBlocks(),
 		Timestamp: time.Now(),
 	})
+	log.Println("Appended the private IP addresses.", len(allowedIPBlocks))
 
 	// Now read the country files and append them.
+	log.Println("Now read the country files and append them.")
 	for _, country := range countries {
 		allowedIPBlocks = append(allowedIPBlocks, CreateCountryIPBlocks(country, cidrFileFolder))
 	}
+	log.Println("Appended the country IP addresses.", len(allowedIPBlocks)-1)
 
 	return allowedIPBlocks
 }
@@ -300,6 +308,8 @@ func InitializeAllowedIPRanges(countries []string, cidrFileFolder string) []*IpR
 // Returns a list of private IP blocks.
 // https://stackoverflow.com/questions/41240761/check-if-ip-address-is-in-private-network-space
 func InitializePrivateIPBlocks() []*net.IPNet {
+	log.Println("InitializePrivateIPBlocks...")
+
 	var privateIPBlocks []*net.IPNet
 
 	for _, cidr := range []string{
@@ -360,6 +370,8 @@ func ParseIP(address string) (net.IP, error) {
 // Reads a file based on the provided file path.
 // Returns each line in a list on success, otherwise nil and an error.
 func ReadFile(file string) ([]string, error) {
+	log.Println("ReadFile: ", file)
+
 	var lines []string
 
 	// Open file
