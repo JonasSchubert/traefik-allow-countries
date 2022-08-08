@@ -83,13 +83,13 @@ func New(ctx context.Context, next http.Handler, config *Config, name string) (h
 		return nil, fmt.Errorf("the list of allowed countries is empty")
 	}
 
-	log.Println("Allow local IPs: ", config.AllowLocalRequests)
-	log.Println("Allowed countries: ", config.Countries)
-	log.Println("CIDR file folder: ", config.CidrFileFolder)
-	log.Println("CIDR file update: ", config.CidrFileUpdate)
-	log.Println("Log allowed requests: ", config.LogAllowedRequests)
-	log.Println("Log details: ", config.LogDetails)
-	log.Println("Log local requests: ", config.LogLocalRequests)
+	// log.Println("Allow local IPs: ", config.AllowLocalRequests)
+	// log.Println("Allowed countries: ", config.Countries)
+	// log.Println("CIDR file folder: ", config.CidrFileFolder)
+	// log.Println("CIDR file update: ", config.CidrFileUpdate)
+	// log.Println("Log allowed requests: ", config.LogAllowedRequests)
+	// log.Println("Log details: ", config.LogDetails)
+	// log.Println("Log local requests: ", config.LogLocalRequests)
 
 	return &traefik_allow_countries{
 		next:               next,
