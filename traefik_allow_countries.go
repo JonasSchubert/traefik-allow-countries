@@ -161,7 +161,7 @@ func (allowCountries *traefik_allow_countries) ServeHTTP(responseWriter http.Res
 				// If IP was found we can break the current cycle.
 				if found {
 					if allowCountries.logAllowedRequests {
-						log.Printf("%s: Request (%s) allowed for IP [%s]", allowCountries.name, request.URL, ipAddress)
+						log.Printf("%s: Request (%s %s) allowed for IP [%s]", allowCountries.name, request.Host, request.URL, ipAddress)
 					}
 					break
 				}
@@ -169,7 +169,7 @@ func (allowCountries *traefik_allow_countries) ServeHTTP(responseWriter http.Res
 		}
 
 		if !found {
-			log.Printf("%s: Request (%s) denied for IP [%s]", allowCountries.name, request.URL, ipAddress)
+			log.Printf("%s: Request (%s %s) denied for IP [%s]", allowCountries.name, request.Host, request.URL, ipAddress)
 			responseWriter.WriteHeader(http.StatusForbidden)
 
 			return
