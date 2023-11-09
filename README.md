@@ -34,6 +34,7 @@ http:
             - DE
           logAllowedRequests: false
           logLocalRequests: false
+          silentStartUp: true
 ```
 
 docker-compose.yml
@@ -325,6 +326,7 @@ my-allow-countries:
                 - AX # Åland Islands
             logAllowedRequests: false
             logLocalRequests: true
+            silentStartUp: false
 ```
 
 ## Configuration options

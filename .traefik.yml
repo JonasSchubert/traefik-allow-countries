@@ -25,3 +25,4 @@ testData:
   logAllowedRequests: false
   logDetails: true
   logLocalRequests: false
+  silentStartUp: true
