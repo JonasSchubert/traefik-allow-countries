@@ -376,9 +376,9 @@ Defaults to `true`.
 
 ## Contributors
 
-| [<img alt="JonasSchubert" src="https://secure.gravatar.com/avatar/835215bfb654d58acb595c64f107d052?s=180&d=identicon" width="117"/>](https://code.sinthu-und-jonas.de/jonas-schubert) |
+| [<img alt="JonasSchubert" src="https://secure.gravatar.com/avatar/835215bfb654d58acb595c64f107d052?s=180&d=identicon" width="117"/>](https://code.schubert.zone/jonas-schubert) |
 | :---------------------------------------------------------------------------------------------------------------------------------------: |
-| [Jonas Schubert](https://code.sinthu-und-jonas.de/jonas-schubert) |
+| [Jonas Schubert](https://code.schubert.zone/jonas-schubert) |
 
 ## License
 
