@@ -19,6 +19,7 @@ import (
  **********************************/
 
 const (
+	CountryHeader         = "X-IPCountry"
 	HoursInMillis         = 60 * 60 * 1000
 	PrivateIpAddressesTag = "private"
 )
@@ -30,6 +31,7 @@ const (
 type traefik_allow_countries struct {
 	next               http.Handler
 	name               string
+	addCountryHeader   bool
 	allowedIPRanges    []*IpRangesTimestamp
 	allowLocalRequests bool
 	cidrFileFolder     string
@@ -42,6 +44,7 @@ type traefik_allow_countries struct {
 }
 
 type Config struct {
+	AddCountryHeader   bool     `yaml:"addCountryHeader"`
 	AllowLocalRequests bool     `yaml:"allowLocalRequests"`
 	CidrFileFolder     string   `yaml:"cidrFileFolder"`
 	CidrFileUpdate     bool     `yaml:"cidrFileUpdate"`
@@ -66,6 +69,7 @@ type IpRangesTimestamp struct {
 // Returns a empty config object.
 func CreateConfig() *Config {
 	return &Config{
+		AddCountryHeader:   true,
 		AllowLocalRequests: false,
 		CidrFileUpdate:     true,
 		LogAllowedRequests: false,
@@ -87,6 +91,7 @@ func New(ctx context.Context, next http.Handler, config *Config, name string) (h
 	}
 
 	if !config.SilentStartUp {
+		log.Println("Add country header: ", config.AddCountryHeader)
 		log.Println("Allow local IPs: ", config.AllowLocalRequests)
 		log.Println("Allowed countries: ", config.Countries)
 		log.Println("CIDR file folder: ", config.CidrFileFolder)
@@ -99,6 +104,7 @@ func New(ctx context.Context, next http.Handler, config *Config, name string) (h
 	return &traefik_allow_countries{
 		next:               next,
 		name:               name,
+		addCountryHeader:   config.AddCountryHeader,
 		allowedIPRanges:    InitializeAllowedIPRanges(config.Countries, config.CidrFileFolder),
 		allowLocalRequests: config.AllowLocalRequests,
 		cidrFileFolder:     config.CidrFileFolder,
@@ -169,6 +175,11 @@ func (allowCountries *traefik_allow_countries) ServeHTTP(responseWriter http.Res
 					if allowCountries.logAllowedRequests {
 						log.Printf("%s: Request (%s %s) allowed for IP [%s]", allowCountries.name, request.Host, request.URL, ipAddress)
 					}
+
+					if allowCountries.addCountryHeader {
+						req.Header.Set(CountryHeader, allowCountries.allowedIPRanges[index].Country)
+					}
+
 					break
 				}
 			}
