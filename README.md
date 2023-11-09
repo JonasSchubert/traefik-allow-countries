@@ -382,7 +382,7 @@ traefik-allow-countries is distributed under the MIT license. [See LICENSE](LICE
 ```
 MIT License
 
-Copyright (c) 2022 Jonas Schubert
+Copyright (c) 2022-2023 Jonas Schubert
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
