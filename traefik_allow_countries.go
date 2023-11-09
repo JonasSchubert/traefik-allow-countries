@@ -177,7 +177,7 @@ func (allowCountries *traefik_allow_countries) ServeHTTP(responseWriter http.Res
 					}
 
 					if allowCountries.addCountryHeader {
-						req.Header.Set(CountryHeader, allowCountries.allowedIPRanges[index].Country)
+						request.Header.Set(CountryHeader, allowCountries.allowedIPRanges[index].Country)
 					}
 
 					break
