@@ -19,6 +19,7 @@ summary: 'Only allow request based on their country of origin'
 # This is mandatory,
 # and Traefik Pilot will try to execute the plugin with the data you provide as part of its startup validity tests.
 testData:
+  addCountryHeader: true
   allowLocalRequests: false
   countries:
     - DE
