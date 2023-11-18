@@ -11,8 +11,9 @@ import (
 
 const (
 	xForwardedFor = "X-Forwarded-For"
-	DE            = "99.220.109.148"
-	UK            = "82.220.110.18"
+	DE            = "2.56.20.0"
+	GB            = "1.186.0.0"
+	US            = "2.56.8.0"
 	PrivateRange  = "192.168.1.1"
 	Invalid       = "192.168.1.X"
 )
@@ -37,7 +38,7 @@ func TestEmptyCidrFileFolder(t *testing.T) {
 func TestEmptyAllowedCountryList(t *testing.T) {
 	cfg := AllowCountries.CreateConfig()
 
-	cfg.CidrFileFolder = "/usr/share/traefik/cidr"
+	cfg.CidrFileFolder = ".test-data"
 	cfg.Countries = make([]string, 0)
 
 	ctx := context.Background()
@@ -56,6 +57,7 @@ func TestAllowedCountry(t *testing.T) {
 
 	cfg.AllowLocalRequests = false
 	cfg.LogLocalRequests = false
+	cfg.CidrFileFolder = ".test-data"
 	cfg.Countries = append(cfg.Countries, "DE")
 
 	ctx := context.Background()
@@ -85,7 +87,8 @@ func TestMultipleAllowedCountries(t *testing.T) {
 
 	cfg.AllowLocalRequests = false
 	cfg.LogLocalRequests = false
-	cfg.Countries = append(cfg.Countries, "DE", "UK")
+	cfg.CidrFileFolder = ".test-data"
+	cfg.Countries = append(cfg.Countries, "DE", "GB")
 
 	ctx := context.Background()
 	next := http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {})
@@ -102,7 +105,7 @@ func TestMultipleAllowedCountries(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	req.Header.Add(xForwardedFor, UK)
+	req.Header.Add(xForwardedFor, GB)
 
 	handler.ServeHTTP(recorder, req)
 
@@ -114,6 +117,7 @@ func TestAllowLocalIP(t *testing.T) {
 
 	cfg.AllowLocalRequests = true
 	cfg.LogLocalRequests = false
+	cfg.CidrFileFolder = ".test-data"
 	cfg.Countries = append(cfg.Countries, "DE")
 
 	ctx := context.Background()
@@ -146,4 +150,34 @@ func assertStatusCode(t *testing.T, req *http.Response, expected int) {
 	if received != expected {
 		t.Errorf("invalid status code: %d <> %d", expected, received)
 	}
+}
+
+func TestBlockedCountry(t *testing.T) {
+	cfg := AllowCountries.CreateConfig()
+
+	cfg.AllowLocalRequests = false
+	cfg.LogLocalRequests = false
+	cfg.CidrFileFolder = ".test-data"
+	cfg.Countries = append(cfg.Countries, "DE", "GB")
+
+	ctx := context.Background()
+	next := http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {})
+
+	handler, err := AllowCountries.New(ctx, next, cfg, "AllowCountries")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	recorder := httptest.NewRecorder()
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, "http://localhost", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	req.Header.Add(xForwardedFor, US)
+
+	handler.ServeHTTP(recorder, req)
+
+	assertStatusCode(t, recorder.Result(), http.StatusForbidden)
 }
