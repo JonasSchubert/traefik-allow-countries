@@ -14,10 +14,10 @@
     "url": "https://github.com/JonasSchubert/traefik-allow-countries.git"
   },
   "scripts": {
-    "build:prod": "exit 0",
+    "build:prod": "go build",
     "prepare": "is-ci || husky install",
     "pre-push": "npm run test:unit && npm run build:prod",
-    "test:unit": "exit 0"
+    "test:unit": "go test"
   },
   "devDependencies": {
     "@commitlint/cli": "^18.4.2",
