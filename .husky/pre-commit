@@ -1,0 +1,24 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# Checks if branch has something pending.
+function branch_has_pending_actions() {
+  git diff --quiet --ignore-submodules HEAD 2>/dev/null; [ $? -eq 1 ] && echo "*"
+}
+
+# Gets the current git branch.
+function get_current_git_branch() {
+  git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e "s/* \(.*\)/\1$(branch_has_pending_actions)/"
+}
+
+# Evaluate and define the necessary variables.
+CURRENT_GIT_BRANCH=$(get_current_git_branch)
+PROTECTED_BRANCH="main"
+
+# Prevents commiting directly to the protected branch.
+if [ "$CURRENT_GIT_BRANCH" = "$PROTECTED_BRANCH" ]; then
+  echo "You can't commit directly to a protected branch!"
+  exit 1
+fi
+
+npm run pre-commit

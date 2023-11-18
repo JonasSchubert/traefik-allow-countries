@@ -1,0 +1,29 @@
+{
+  "name": "traefik-allow-countries",
+  "version": "0.0.0",
+  "description": "A traefik plugin to allow only certain countries and block everything else.",
+  "author": {
+    "name": "Jonas Schubert",
+    "url": "https://github.com/JonasSchubert/",
+    "email": "jonas.schubert.projects@web.de"
+  },
+  "contributors": [],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JonasSchubert/traefik-allow-countries.git"
+  },
+  "scripts": {
+    "build:prod": "exit 0",
+    "prepare": "is-ci || husky install",
+    "pre-push": "npm run test:unit && npm run build:prod",
+    "test:unit": "exit 0"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^18.4.2",
+    "@commitlint/config-conventional": "^18.4.2",
+    "commitlint-presets": "^1.0.3",
+    "husky": "^8.0.3",
+    "is-ci": "^3.0.1"
+  }
+}
