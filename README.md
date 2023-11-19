@@ -16,7 +16,7 @@ log:
 experimental:
   localPlugins:
     allow-countries:
-      moduleName: github.com/jonasschubert/traefik-allow-countries
+      moduleName: github.com/JonasSchubert/traefik-allow-countries
 ```
 
 dynamic-configuration.yml
@@ -49,7 +49,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - /docker/config/traefik/traefik.yml:/etc/traefik/traefik.yml
       - /docker/config/traefik/dynamic-configuration.yml:/etc/traefik/dynamic-configuration.yml
-      - /plugin/allow-countries:/plugins-local/src/github.com/jonasschubert/traefik-allow-countries/
+      - /plugin/allow-countries:/plugins-local/src/github.com/JonasSchubert/traefik-allow-countries/
     ports:
       - "80:80"
   hello:

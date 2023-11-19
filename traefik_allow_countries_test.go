@@ -6,7 +6,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	AllowCountries "github.com/jonasschubert/traefik-allow-countries"
+	AllowCountries "github.com/JonasSchubert/traefik-allow-countries"
 )
 
 const (

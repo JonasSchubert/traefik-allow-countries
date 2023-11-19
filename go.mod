@@ -1,3 +1,3 @@
-module github.com/jonasschubert/traefik-allow-countries
+module github.com/JonasSchubert/traefik-allow-countries
 
 go 1.21.4

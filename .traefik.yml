@@ -7,7 +7,7 @@ displayName: traefik_allow_countries
 type: middleware
 
 # The import path of your plugin.
-import: github.com/jonasschubert/traefik-allow-countries
+import: github.com/JonasSchubert/traefik-allow-countries
 
 # A brief description of what your plugin is doing.
 summary: 'Only allow request based on their country of origin'
