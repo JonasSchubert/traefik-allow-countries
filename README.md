@@ -34,6 +34,7 @@ http:
           countries:
             - DE
           logAllowedRequests: false
+          logDetails: true
           logLocalRequests: false
           silentStartUp: true
 ```
@@ -328,6 +329,7 @@ my-allow-countries:
         - ZW # Zimbabwe
         - AX # Åland Islands
       logAllowedRequests: false
+      logDetails: true
       logLocalRequests: true
       silentStartUp: false
 ```
