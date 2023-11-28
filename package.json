@@ -25,5 +25,14 @@
     "commitlint-presets": "^1.0.3",
     "husky": "^8.0.3",
     "is-ci": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  },
+  "commitlint": {
+    "extends": [
+      "./node_modules/commitlint-presets/index.js"
+    ]
   }
 }
