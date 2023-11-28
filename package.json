@@ -17,7 +17,7 @@
     "build:prod": "go build",
     "prepare": "is-ci || husky install",
     "pre-push": "npm run test:unit && npm run build:prod",
-    "test:unit": "go test"
+    "test:unit": "go test -v -cover"
   },
   "devDependencies": {
     "@commitlint/cli": "^18.4.3",
