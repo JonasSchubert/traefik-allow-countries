@@ -15,8 +15,16 @@ jobs:
     - uses: actions/setup-go@v4
       with:
         go-version: ${{ matrix.go-version }}
+        cache: false
     - name: Install dependencies
       run: go get .
+    - name: golangci-lint
+      uses: golangci/golangci-lint-action@v3
+      with:
+        version: v1.55.2
+        skip-cache: true
+        skip-pkg-cache: true
+        skip-build-cache: true
     - name: Test
       run: go test -v -cover
     - name: Build
