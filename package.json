@@ -16,7 +16,7 @@
   "scripts": {
     "build:prod": "go build",
     "lint": "golangci-lint run -v",
-    "prepare": "is-ci || husky install",
+    "prepare": "is-ci || husky",
     "pre-push": "npm run test:unit && npm run build:prod",
     "test:unit": "go test -v -cover"
   },
