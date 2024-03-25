@@ -21,7 +21,7 @@
     "test:unit": "go test -v -cover"
   },
   "devDependencies": {
-    "@commitlint/cli": "^19.0.3",
+    "@commitlint/cli": "^19.2.1",
     "@commitlint/config-conventional": "^19.0.3",
     "commitlint-presets": "^1.0.3",
     "husky": "^9.0.11",
