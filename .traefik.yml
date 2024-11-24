@@ -21,7 +21,7 @@ summary: 'Only allow request based on their country of origin'
 testData:
   addCountryHeader: true
   allowLocalRequests: false
-  cidrFileFolder: './test-data'
+  cidrFileFolder: './.test-data'
   cidrFileUpdate: true
   countries:
     - DE
