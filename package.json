@@ -21,15 +21,15 @@
     "test:unit": "go test -v -cover"
   },
   "devDependencies": {
-    "@commitlint/cli": "^19.5.0",
-    "@commitlint/config-conventional": "^19.5.0",
+    "@commitlint/cli": "^19.6.0",
+    "@commitlint/config-conventional": "^19.6.0",
     "commitlint-presets": "^1.0.5",
-    "husky": "^9.1.6",
+    "husky": "^9.1.7",
     "is-ci": "^3.0.1"
   },
   "engines": {
-    "node": ">=20.0.0",
-    "npm": ">=10.0.0"
+    "node": ">=22.11.0",
+    "npm": ">=10.9.1"
   },
   "commitlint": {
     "extends": [
