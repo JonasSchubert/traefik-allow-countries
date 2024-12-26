@@ -33,6 +33,7 @@ http:
           cidrFileUpdate: true
           countries:
             - DE
+          fileExtension: 'cidr'
           logAllowedRequests: false
           logDetails: true
           logLocalRequests: false
@@ -327,6 +328,7 @@ my-allow-countries:
         - ZM # Zambia
         - ZW # Zimbabwe
         - AX # Åland Islands
+      fileExtension: 'cidr'
       logAllowedRequests: false
       logDetails: true
       logLocalRequests: true
@@ -356,6 +358,10 @@ Defaults to `true`.
 ### Countries `countries`
 
 A list of country codes from which connections to the service should be allowed.
+
+### File extension `fileExtension`
+
+The file extension to use. Defaults to `cidr`. If you use i.e. the [alternative project](https://git.herrbischoff.com/country-ip-blocks-alternative), you should set it to `netset`.
 
 ### Log allowed requests `logAllowedRequests`
 

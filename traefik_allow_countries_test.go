@@ -11,6 +11,7 @@ import (
 
 const (
 	xForwardedFor = "X-Forwarded-For"
+	AT            = "2.16.16.0"
 	DE            = "2.56.20.0"
 	GB            = "1.186.0.0"
 	US            = "2.56.8.0"
@@ -76,6 +77,37 @@ func TestAllowedCountry(t *testing.T) {
 	}
 
 	req.Header.Add(xForwardedFor, DE)
+
+	handler.ServeHTTP(recorder, req)
+
+	assertStatusCode(t, recorder.Result(), http.StatusOK)
+}
+
+func TestAllowedCountry_WithCustomFileExtension(t *testing.T) {
+	cfg := AllowCountries.CreateConfig()
+
+	cfg.AllowLocalRequests = false
+	cfg.LogLocalRequests = false
+	cfg.CidrFileFolder = ".test-data"
+	cfg.FileExtension = "netset"
+	cfg.Countries = append(cfg.Countries, "AT")
+
+	ctx := context.Background()
+	next := http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {})
+
+	handler, err := AllowCountries.New(ctx, next, cfg, "AllowCountries")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	recorder := httptest.NewRecorder()
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, "http://localhost", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	req.Header.Add(xForwardedFor, AT)
 
 	handler.ServeHTTP(recorder, req)
 
@@ -159,6 +191,37 @@ func TestBlockedCountry(t *testing.T) {
 	cfg.LogLocalRequests = false
 	cfg.CidrFileFolder = ".test-data"
 	cfg.Countries = append(cfg.Countries, "DE", "GB")
+
+	ctx := context.Background()
+	next := http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {})
+
+	handler, err := AllowCountries.New(ctx, next, cfg, "AllowCountries")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	recorder := httptest.NewRecorder()
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, "http://localhost", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	req.Header.Add(xForwardedFor, US)
+
+	handler.ServeHTTP(recorder, req)
+
+	assertStatusCode(t, recorder.Result(), http.StatusForbidden)
+}
+
+func TestBlockedCountry_WithCustomFileExtension(t *testing.T) {
+	cfg := AllowCountries.CreateConfig()
+
+	cfg.AllowLocalRequests = false
+	cfg.LogLocalRequests = false
+	cfg.CidrFileFolder = ".test-data"
+	cfg.FileExtension = "netset"
+	cfg.Countries = append(cfg.Countries, "AT")
 
 	ctx := context.Background()
 	next := http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {})

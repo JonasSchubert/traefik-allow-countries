@@ -37,6 +37,7 @@ type traefik_allow_countries struct {
 	cidrFileFolder     string
 	cidrFileUpdate     bool
 	countries          []string
+	fileExtension      string
 	logAllowedRequests bool
 	logDetails         bool
 	logLocalRequests   bool
@@ -49,6 +50,7 @@ type Config struct {
 	CidrFileFolder     string   `yaml:"cidrFileFolder"`
 	CidrFileUpdate     bool     `yaml:"cidrFileUpdate"`
 	Countries          []string `yaml:"countries,omitempty"`
+	FileExtension      string   `yaml:"fileExtension"`
 	LogAllowedRequests bool     `yaml:"logAllowedRequests"`
 	LogDetails         bool     `yaml:"logDetails"`
 	LogLocalRequests   bool     `yaml:"logLocalRequests"`
@@ -72,6 +74,7 @@ func CreateConfig() *Config {
 		AddCountryHeader:   true,
 		AllowLocalRequests: false,
 		CidrFileUpdate:     true,
+		FileExtension:      "cidr",
 		LogAllowedRequests: false,
 		LogDetails:         true,
 		LogLocalRequests:   true,
@@ -96,6 +99,7 @@ func New(ctx context.Context, next http.Handler, config *Config, name string) (h
 		log.Println("Allowed countries: ", config.Countries)
 		log.Println("CIDR file folder: ", config.CidrFileFolder)
 		log.Println("CIDR file update: ", config.CidrFileUpdate)
+		log.Println("File extension: ", config.FileExtension)
 		log.Println("Log allowed requests: ", config.LogAllowedRequests)
 		log.Println("Log details: ", config.LogDetails)
 		log.Println("Log local requests: ", config.LogLocalRequests)
@@ -105,11 +109,12 @@ func New(ctx context.Context, next http.Handler, config *Config, name string) (h
 		next:               next,
 		name:               name,
 		addCountryHeader:   config.AddCountryHeader,
-		allowedIPRanges:    InitializeAllowedIPRanges(config.Countries, config.CidrFileFolder),
+		allowedIPRanges:    InitializeAllowedIPRanges(config.Countries, config.CidrFileFolder, config.FileExtension),
 		allowLocalRequests: config.AllowLocalRequests,
 		cidrFileFolder:     config.CidrFileFolder,
 		cidrFileUpdate:     config.CidrFileUpdate,
 		countries:          config.Countries,
+		fileExtension:      config.FileExtension,
 		logAllowedRequests: config.LogAllowedRequests,
 		logDetails:         config.LogDetails,
 		logLocalRequests:   config.LogLocalRequests,
@@ -166,7 +171,7 @@ func (allowCountries *traefik_allow_countries) ServeHTTP(responseWriter http.Res
 			if allowCountries.allowedIPRanges[index].Country != PrivateIpAddressesTag {
 				// Check whether an update is needed.
 				if allowCountries.cidrFileUpdate && time.Since(allowCountries.allowedIPRanges[index].Timestamp).Hours() >= HoursInMillis {
-					allowCountries.allowedIPRanges[index] = CreateCountryIPBlocks(allowCountries.allowedIPRanges[index].Country, allowCountries.cidrFileFolder)
+					allowCountries.allowedIPRanges[index] = CreateCountryIPBlocks(allowCountries.allowedIPRanges[index].Country, allowCountries.cidrFileFolder, allowCountries.fileExtension)
 				}
 
 				found = IsIpInList(*ipAddress, allowCountries.allowedIPRanges[index].IpRanges)
@@ -239,14 +244,14 @@ func (allowCountries *traefik_allow_countries) CollectRemoteIP(request *http.Req
 }
 
 // Creates a new IP ranges timestamp entity for the provided country.
-func CreateCountryIPBlocks(country string, cidrFileFolder string) *IpRangesTimestamp {
+func CreateCountryIPBlocks(country string, cidrFileFolder string, fileExtension string) *IpRangesTimestamp {
 	var countryIPBlocks []*net.IPNet
 
 	for _, ipType := range []string{
 		"ipv4",
 		"ipv6",
 	} {
-		lines, err := ReadFile(cidrFileFolder + "/" + ipType + "/" + strings.ToLower(country) + ".cidr")
+		lines, err := ReadFile(cidrFileFolder + "/" + ipType + "/" + strings.ToLower(country) + "." + fileExtension)
 		if err != nil {
 			panic(fmt.Errorf("failed to read file for version %q and country %q: %v", ipType, country, err))
 		}
@@ -270,7 +275,7 @@ func CreateCountryIPBlocks(country string, cidrFileFolder string) *IpRangesTimes
 // This method initializes the allowed IP ranges.
 // It uses a predefined range of private CIDR addresses and reads cidr files based on the provided countries.
 // Returns a list of IP ranges timestamp objects.
-func InitializeAllowedIPRanges(countries []string, cidrFileFolder string) []*IpRangesTimestamp {
+func InitializeAllowedIPRanges(countries []string, cidrFileFolder string, fileExtension string) []*IpRangesTimestamp {
 	var allowedIPBlocks []*IpRangesTimestamp
 
 	// Append the private IP addresses first.
@@ -282,7 +287,7 @@ func InitializeAllowedIPRanges(countries []string, cidrFileFolder string) []*IpR
 
 	// Now read the country files and append them.
 	for _, country := range countries {
-		allowedIPBlocks = append(allowedIPBlocks, CreateCountryIPBlocks(country, cidrFileFolder))
+		allowedIPBlocks = append(allowedIPBlocks, CreateCountryIPBlocks(country, cidrFileFolder, fileExtension))
 	}
 
 	return allowedIPBlocks

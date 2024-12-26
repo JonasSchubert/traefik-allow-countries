@@ -25,6 +25,7 @@ testData:
   cidrFileUpdate: true
   countries:
     - DE
+  fileExtension: 'cidr'
   logAllowedRequests: false
   logDetails: true
   logLocalRequests: false
